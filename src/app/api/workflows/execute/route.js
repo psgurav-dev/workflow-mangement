@@ -18,9 +18,6 @@ export async function POST(req) {
 
     return NextResponse.json(workflow, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Error executing workflow" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Error executing workflow" }, { status: 500 });
   }
 }
