@@ -31,7 +31,7 @@ const LogInForm = () => {
     }
   };
   return (
-    <div className="font-poppins bg-foreground p-10 w-[30%] rounded-xl absolute right-56  -top-36 h-[90vh]  ">
+    <div className="font-poppins bg-foreground p-10 w-[30%] rounded-xl absolute right-56  -top-36 h-[800px]  ">
       <h4 className="text-xl">WELCOME BACK!</h4>
       <h2 className="text-2xl">Log In to your Account</h2>
       <span className="text-primary">{error && error}</span>
