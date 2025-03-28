@@ -31,9 +31,9 @@ const LogInForm = () => {
     }
   };
   return (
-    <div className="font-poppins bg-foreground p-16 w-[600px] rounded-xl absolute right-56 -top-36 h-[90vh] mb-56">
+    <div className="font-poppins bg-foreground p-10 w-[30%] rounded-xl absolute right-56  -top-36 h-[90vh]  ">
       <h4 className="text-xl">WELCOME BACK!</h4>
-      <h2 className="text-3xl">Log In to your Account</h2>
+      <h2 className="text-2xl">Log In to your Account</h2>
       <span className="text-primary">{error && error}</span>
       <div className="flex flex-col  items-start my-4 gap-y-4">
         <label htmlFor="email" className="text-lg">
@@ -100,7 +100,7 @@ const LogInForm = () => {
           <FacebookIcon />
           Log in with Faccebook
         </button>
-        <Link className="text-sm underline font-bold text-center w-full my-8" href={"/signup"}>
+        <Link className="text-sm underline font-bold text-center w-full my-2" href={"/signup"}>
           New User? SIGN UP HERE
         </Link>
       </div>

@@ -25,12 +25,14 @@ export default function WorkflowTable() {
   const [expandedRow, setExpandedRow] = useState(null);
   const [loadingId, setLoadingId] = useState(null);
   const limit = 5;
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchWorkflows = async (page) => {
     const res = await fetch(`/api/workflows?page=${page}&limit=${limit}&search=${search}`);
     const data = await res.json();
 
     setData(data.workflows);
+    setIsLoading(false);
     setTotalPages(data.totalPages);
     setCurrentPage(data.currentPage);
   };
@@ -119,123 +121,129 @@ export default function WorkflowTable() {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg">
-        <table className="w-full text-left">
-          <thead className="border-b-2 border-amber-500 border-solid">
-            <tr>
-              <th className="p-3 border-b">Workflow Name</th>
-              <th className="p-3 border-b">ID</th>
-              <th className="p-3 border-b">Last Edited On</th>
-              <th className="p-3 border-b">Description</th>
-              <th className="p-3 border-b text-center"></th>
-            </tr>
-          </thead>
+      {isLoading ? (
+        <div>
+          <h4 className="text-4xl font-bold italic text-center">Loading ...</h4>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-lg">
+          <table className="w-full text-left">
+            <thead className="border-b-2 border-amber-500 border-solid">
+              <tr>
+                <th className="p-3 border-b">Workflow Name</th>
+                <th className="p-3 border-b">ID</th>
+                <th className="p-3 border-b">Last Edited On</th>
+                <th className="p-3 border-b">Description</th>
+                <th className="p-3 border-b text-center"></th>
+              </tr>
+            </thead>
 
-          <tbody className="font-poppins text-[#4F4F4F]">
-            {data.map((item, index) => (
-              <React.Fragment key={item.id}>
-                <tr className="border-b">
-                  <td className="p-3">{item.workflowName}</td>
-                  <td className="p-3">#{item.id}</td>
-                  <td className="p-3">{item.lastEdited}</td>
-                  <td className="p-2 max-w-[800px]">{item.description}</td>
-                  <td className="p-3 flex items-center gap-6 justify-end">
-                    <button onClick={() => toggleFavorite(item.id)} className="mx-4">
-                      {item.isFavorite ? <PinIcon color="#fff200" /> : <PinIcon color="#fff" />}
-                    </button>
+            <tbody className="font-poppins text-[#4F4F4F]">
+              {data.map((item, index) => (
+                <React.Fragment key={item.id}>
+                  <tr className="border-b">
+                    <td className="p-3">{item.workflowName}</td>
+                    <td className="p-3">#{item.id}</td>
+                    <td className="p-3">{item.lastEdited}</td>
+                    <td className="p-2 max-w-[800px]">{item.description}</td>
+                    <td className="p-3 flex items-center gap-6 justify-end">
+                      <button onClick={() => toggleFavorite(item.id)} className="mx-4">
+                        {item.isFavorite ? <PinIcon color="#fff200" /> : <PinIcon color="#fff" />}
+                      </button>
 
-                    <button
-                      onClick={() => handleSelect(index)}
-                      className="border border-[#E0E0E0] px-4 py-1 rounded-lg text-sm"
-                    >
-                      {loadingId === item.id ? "Executing..." : "Execute"}
-                    </button>
+                      <button
+                        onClick={() => handleSelect(index)}
+                        className="border border-[#E0E0E0] px-4 py-1 rounded-lg text-sm"
+                      >
+                        {loadingId === item.id ? "Executing..." : "Execute"}
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        setSelectedWork(index);
-                        setEditModal(!editModal);
-                      }}
-                      className="border border-[#E0E0E0] px-4 py-1 rounded-lg text-sm"
-                    >
-                      Edit
-                    </button>
+                      <button
+                        onClick={() => {
+                          setSelectedWork(index);
+                          setEditModal(!editModal);
+                        }}
+                        className="border border-[#E0E0E0] px-4 py-1 rounded-lg text-sm"
+                      >
+                        Edit
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        setSelectedWork(index);
-                        setOptions(!options);
-                      }}
-                    >
-                      <HiDotsVertical className="text-lg" />
-                      {options && selectedWork === index && (
-                        <div className="bg-white shadow-xl p-4 absolute cursor-pointer">
-                          <div
-                            className="text-red-500 underline"
-                            onClick={() => setDeleteModal(true)}
-                          >
-                            Delete
-                          </div>
-                        </div>
-                      )}
-                    </button>
-
-                    {/* Expand/Collapse Button */}
-                    <button onClick={() => toggleExpand(item.id)}>
-                      {expandedRow === item.id ? (
-                        <FaArrowUp className="text-lg" />
-                      ) : (
-                        <FaArrowDown className="text-lg" />
-                      )}
-                    </button>
-                  </td>
-                </tr>
-
-                {expandedRow === item.id && (
-                  <tr>
-                    <td colSpan="5" className="p-4 bg-orange-50 border-t">
-                      <h3 className="font-semibold">Execution History</h3>
-                      <div className="mt-2 space-y-2">
-                        {item.executions.length > 0 ? (
-                          item.executions.map((execution, index) => (
-                            <div key={index} className="flex items-center space-x-4 space-y-8 ">
-                              <span className="w-4 h-4 flex relative top-2 items-center justify-center border-primary border-solid border-2 rounded-full after:pb-8 after:bg-red-500 after:content-[''] after:h-8">
-                                <div className="w-2 h-2 bg-primary rounded-full relative">
-                                  {item.executions.length - 1 !== index && (
-                                    <span className="h-16 w-1 bg-primary absolute left-1/2 -translate-x-1/2" />
-                                  )}
-                                </div>
-                              </span>
-
-                              <div className="grid grid-cols-3 gap-x-4">
-                                <p>{item.lastEdited} IST</p>
-                                <p
-                                  className={`px-2 py-1 text-sm rounded ${
-                                    execution.status === "Passed"
-                                      ? "bg-green-200 text-green-800"
-                                      : "bg-red-200 text-red-800"
-                                  }`}
-                                >
-                                  {execution.status}
-                                </p>
-                                <p className="">
-                                  <RedirectIcon />
-                                </p>
-                              </div>
+                      <button
+                        onClick={() => {
+                          setSelectedWork(index);
+                          setOptions(!options);
+                        }}
+                      >
+                        <HiDotsVertical className="text-lg" />
+                        {options && selectedWork === index && (
+                          <div className="bg-white shadow-xl p-4 absolute cursor-pointer">
+                            <div
+                              className="text-red-500 underline"
+                              onClick={() => setDeleteModal(true)}
+                            >
+                              Delete
                             </div>
-                          ))
-                        ) : (
-                          <p className="text-gray-500">No executions available.</p>
+                          </div>
                         )}
-                      </div>
+                      </button>
+
+                      {/* Expand/Collapse Button */}
+                      <button onClick={() => toggleExpand(item.id)}>
+                        {expandedRow === item.id ? (
+                          <FaArrowUp className="text-lg" />
+                        ) : (
+                          <FaArrowDown className="text-lg" />
+                        )}
+                      </button>
                     </td>
                   </tr>
-                )}
-              </React.Fragment>
-            ))}
-          </tbody>
-        </table>
-      </div>
+
+                  {expandedRow === item.id && (
+                    <tr>
+                      <td colSpan="5" className="p-4 bg-orange-50 border-t">
+                        <h3 className="font-semibold">Execution History</h3>
+                        <div className="mt-2 space-y-2">
+                          {item.executions.length > 0 ? (
+                            item.executions.map((execution, index) => (
+                              <div key={index} className="flex items-center space-x-4 space-y-8 ">
+                                <span className="w-4 h-4 flex relative top-2 items-center justify-center border-primary border-solid border-2 rounded-full after:pb-8 after:bg-red-500 after:content-[''] after:h-8">
+                                  <div className="w-2 h-2 bg-primary rounded-full relative">
+                                    {item.executions.length - 1 !== index && (
+                                      <span className="h-16 w-1 bg-primary absolute left-1/2 -translate-x-1/2" />
+                                    )}
+                                  </div>
+                                </span>
+
+                                <div className="grid grid-cols-3 gap-x-4">
+                                  <p>{item.lastEdited} IST</p>
+                                  <p
+                                    className={`px-2 py-1 text-sm rounded ${
+                                      execution.status === "Passed"
+                                        ? "bg-green-200 text-green-800"
+                                        : "bg-red-200 text-red-800"
+                                    }`}
+                                  >
+                                    {execution.status}
+                                  </p>
+                                  <p className="">
+                                    <RedirectIcon />
+                                  </p>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-gray-500">No executions available.</p>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <div className="flex justify-end my-8 space-x-2">
         <button

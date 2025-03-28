@@ -27,7 +27,7 @@ export default function Login() {
         }}
       />
 
-      <div className="absolute z-20 flex items-center justify-evenly w-full ">
+      <div className="absolute z-20 flex items-center justify-evenly w-full">
         <div className="flex flex-col gap-y-24 items-start">
           <Logo />
           <div className="text-foreground w-96 font-zen">
