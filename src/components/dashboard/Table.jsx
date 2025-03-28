@@ -138,7 +138,7 @@ export default function WorkflowTable() {
                   <td className="p-3">{item.workflowName}</td>
                   <td className="p-3">#{item.id}</td>
                   <td className="p-3">{item.lastEdited}</td>
-                  <td className="p-3">{item.description}</td>
+                  <td className="p-2 max-w-[800px]">{item.description}</td>
                   <td className="p-3 flex items-center gap-6 justify-end">
                     <button onClick={() => toggleFavorite(item.id)} className="mx-4">
                       {item.isFavorite ? <PinIcon color="#fff200" /> : <PinIcon color="#fff" />}
