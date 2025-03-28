@@ -1,5 +1,5 @@
-import WorkflowTable from "@/components/dashboard/Table";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-	return <WorkflowTable />;
+  return redirect(`/dashboard`);
 }
